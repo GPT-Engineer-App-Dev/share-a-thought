@@ -9,7 +9,7 @@ const Index = () => {
 
   const handlePostSubmit = () => {
     if (newPost.trim() !== "") {
-      addPostMutation.mutate({ title: newPost, body: newPost, author_id: "some-author-id", likes_count: 0 });
+      addPostMutation.mutate({ name: newPost, body: newPost, author_id: "some-author-id", likes_count: 0 });
       setNewPost("");
     }
   };
@@ -38,7 +38,7 @@ const Index = () => {
             <List spacing={3}>
               {posts.map((post) => (
                 <ListItem key={post.id} p={3} shadow="md" borderWidth="1px" borderRadius="md">
-                  {post.title}
+                  {post.name}
                 </ListItem>
               ))}
             </List>
