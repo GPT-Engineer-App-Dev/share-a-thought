@@ -1,13 +1,15 @@
 import { Container, Text, VStack, Box, Heading, Textarea, Button, List, ListItem, Divider } from "@chakra-ui/react";
 import { useState } from "react";
+import { usePosts, useAddPost } from "../integrations/supabase/index.js";
 
 const Index = () => {
-  const [posts, setPosts] = useState([]);
+  const { data: posts, isLoading, isError } = usePosts();
+  const addPostMutation = useAddPost();
   const [newPost, setNewPost] = useState("");
 
   const handlePostSubmit = () => {
     if (newPost.trim() !== "") {
-      setPosts([...posts, newPost]);
+      addPostMutation.mutate({ title: newPost, body: newPost, author_id: "some-author-id", likes_count: 0 });
       setNewPost("");
     }
   };
@@ -28,13 +30,19 @@ const Index = () => {
         <Divider />
         <Box width="100%">
           <Heading as="h2" size="lg" mb={4}>Posts</Heading>
-          <List spacing={3}>
-            {posts.map((post, index) => (
-              <ListItem key={index} p={3} shadow="md" borderWidth="1px" borderRadius="md">
-                {post}
-              </ListItem>
-            ))}
-          </List>
+          {isLoading ? (
+            <Text>Loading...</Text>
+          ) : isError ? (
+            <Text>Error loading posts</Text>
+          ) : (
+            <List spacing={3}>
+              {posts.map((post) => (
+                <ListItem key={post.id} p={3} shadow="md" borderWidth="1px" borderRadius="md">
+                  {post.title}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
       </VStack>
     </Container>
